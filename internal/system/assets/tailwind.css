@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+/* Plugins */
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+:root {
+    --color-primary: #00a6f4;
+    --color-primary-foreground: #FFFFFF;
+}
+
+.loading-indicator {
+    @apply hidden;
+}
+.htmx-request .loading-indicator,
+.htmx-request.loading-indicator {
+    @apply inline-block;
+}

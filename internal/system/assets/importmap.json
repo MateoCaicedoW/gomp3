@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "application": "application.js"
+  }
+}
