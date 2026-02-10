@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"gomp3/internal/converter"
-	"gomp3/internal/system/assets"
+	"github.com/MateoCaicedoW/gomp3/internal/converter"
+	"github.com/MateoCaicedoW/gomp3/internal/system/assets"
 
 	"go.leapkit.dev/core/server"
 )

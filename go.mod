@@ -1,4 +1,4 @@
-module gomp3
+module github.com/MateoCaicedoW/gomp3
 
 go 1.24.0
 

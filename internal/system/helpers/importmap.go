@@ -1,8 +1,9 @@
 package helpers
 
 import (
-	"gomp3/internal/system/assets"
 	"log/slog"
+
+	"github.com/MateoCaicedoW/gomp3/internal/system/assets"
 )
 
 func Importmap() string {

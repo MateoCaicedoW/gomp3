@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"gomp3/internal"
+	"github.com/MateoCaicedoW/gomp3/internal"
 
 	_ "github.com/mattn/go-sqlite3"       // sqlite3 driver
 	_ "go.leapkit.dev/core/tools/envload" // Load environment variables

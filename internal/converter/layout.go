@@ -1,8 +1,8 @@
 package converter
 
 import (
-	"gomp3/internal/system/assets"
-	"gomp3/internal/system/helpers"
+	"github.com/MateoCaicedoW/gomp3/internal/system/assets"
+	"github.com/MateoCaicedoW/gomp3/internal/system/helpers"
 
 	lucide "github.com/eduardolat/gomponents-lucide"
 	"github.com/wawandco/gomui"
