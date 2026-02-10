@@ -13,8 +13,10 @@ Features
 Requirements
 - Go 1.24+
 - ffmpeg available on your PATH (for local runs)
+- **yt-dlp** (recommended for better compatibility with YouTube)
+  - Install with: `brew install yt-dlp` (macOS) or see [yt-dlp installation](https://github.com/yt-dlp/yt-dlp#installation)
 - Tailwind CLI helper `tailo` for rebuilding CSS in development
-	- Install with `go tool tailo download`
+  - Install with `go tool tailo download`
 
 Installation
 ------------
@@ -22,6 +24,24 @@ Installation
 ### Install the CLI Tool
 ```bash
 go install github.com/MateoCaicedoW/gomp3/cmd/gomp3@latest
+```
+
+### Install the Web Server
+```bash
+go install github.com/MateoCaicedoW/gomp3/cmd/app@latest
+```
+
+### Optional: Install yt-dlp (Recommended)
+```bash
+# macOS
+brew install yt-dlp
+
+# Linux
+sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+sudo chmod a+rx /usr/local/bin/yt-dlp
+
+# Windows (with scoop)
+scoop install yt-dlp
 ```
 
 CLI Usage
@@ -61,14 +81,14 @@ Web App Usage
 
 ### Run the Web Server Locally
 1) Install deps: `go mod download`
-2) Ensure ffmpeg is installed (macOS: `brew install ffmpeg`)
+2) Ensure ffmpeg and yt-dlp are installed
 3) Run the app: `go tool dev --watch.extensions=.go,.css,.js `
 4) Visit http://localhost:3000 and paste a YouTube link
 
 ### Docker
 - Build: `docker build -t gomp3 .`
 - Run: `docker run --rm -p 3000:3000 gomp3`
-- ffmpeg is included in the image
+- ffmpeg is included in the image (add yt-dlp to Dockerfile for best results)
 
 ### Configuration
 - `HOST` (default `0.0.0.0`)
@@ -92,69 +112,30 @@ internal/
 examples/                   # Example applications
 ```
 
-Internal MP3 Service
---------------------
-
-The `internal/system/services/mp3` package provides the core YouTube to MP3 conversion functionality:
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-
-    "github.com/MateoCaicedoW/gomp3/internal/system/services/mp3"
-)
-
-func main() {
-    // Create a new service
-    svc := mp3.New()
-
-    // Get video info
-    info, err := svc.GetVideoInfo("https://youtube.com/watch?v=...")
-    if err != nil {
-        panic(err)
-    }
-    fmt.Printf("Title: %s\n", info.Title)
-
-    // Create output file
-    filename := mp3.SanitizeFilename(info.Title) + ".mp3"
-    file, err := os.Create(filename)
-    if err != nil {
-        panic(err)
-    }
-    defer file.Close()
-
-    // Download and convert with default options
-    err = svc.ConvertToWriter(context.Background(), "https://youtube.com/watch?v=...", file, nil)
-    if err != nil {
-        panic(err)
-    }
-}
-```
-
-### Advanced Options
-
-You can customize the conversion parameters:
-
-```go
-opts := &mp3.Options{
-    SampleRate: 44100,  // Higher quality (default: 22050)
-    Channels:   2,      // Stereo (default: 1 - mono)
-    Bitrate:    "128k", // Higher bitrate (default: "64k")
-    Format:     "mp3",  // Output format (default: "mp3")
-}
-
-err := svc.ConvertToWriter(ctx, videoURL, writer, opts)
-```
-
-See the `examples/` directory for complete working examples.
-
 Notes
 -----
+- **yt-dlp is highly recommended** - YouTube blocks many automated downloads. Installing yt-dlp provides much better compatibility.
+- Without yt-dlp, some videos may fail to download with "403 Forbidden" errors
 - The converter picks the best available audio stream from YouTube, runs ffmpeg, then streams the result
 - The MP3 service is located in `internal/system/services/mp3/`
 - When using the service, ensure ffmpeg is installed and available in your PATH
 - The CLI tool supports signal handling (Ctrl+C to cancel downloads gracefully)
+
+Troubleshooting
+---------------
+
+### "Error downloading: failed to download video" or 403 errors
+This means YouTube is blocking the download. Install yt-dlp for better compatibility:
+```bash
+brew install yt-dlp  # macOS
+```
+
+### ffmpeg not found
+Install ffmpeg:
+```bash
+brew install ffmpeg  # macOS
+sudo apt-get install ffmpeg  # Ubuntu/Debian
+```
+
+### Slow downloads
+The conversion process downloads the video first, then converts it to MP3. For longer videos, this can take several minutes.
